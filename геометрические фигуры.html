@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<!-- saved from url=(0033)http://nfbgu1.ru/webgl/webgl.html -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<title>three.js webgl - геометрические фигуры</title>
+		
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		<link type="text/css" rel="stylesheet" href="main.css">
+	</head>
+	<body>
+		<div id="info">
+			Трехмерные фигуры
+		</div>
+
+		<script type="importmap">
+		//Импортируется библиотека с сайта threejs.org 
+			{
+				"imports": {
+					"three": "https://threejs.org/build/three.module.js"
+				}
+			}
+		</script>
+		
+		<script type="module">
+		
+			import * as THREE from 'three';
+			import { OrbitControls } from 'https://threejs.org/examples/jsm/controls/OrbitControls.js'
+			import { TeapotGeometry } from 'https://threejs.org/examples/jsm/geometries/TeapotGeometry.js';
+
+			var camera, scene, renderer;
+			var controls;
+			var ambientLight, light;
+			init();
+			animate();
+
+			function init() {
+
+				var container = document.createElement( 'div' );
+				document.body.appendChild( container );
+
+				// CAMERA
+				camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 1, 5000 );
+				camera.position.set( 300, 700, 1200 );
+
+				// LIGHTS
+				ambientLight = new THREE.AmbientLight( 0x333333 );	// 0.2
+
+				light = new THREE.DirectionalLight( 0xFFFFFF, 1.0 );
+				light.position.set( 1, 1, 1 );				
+				// direction is set in GUI
+
+				// RENDERER
+				renderer = new THREE.WebGLRenderer( { antialias: true } );
+				renderer.setPixelRatio( window.devicePixelRatio );
+				renderer.setSize( window.innerWidth, window.innerHeight );
+				container.appendChild( renderer.domElement );
+
+				// EVENTS
+				window.addEventListener( 'resize', onWindowResize, false );
+
+				// CONTROLS
+				controls = new OrbitControls( camera, renderer.domElement );
+				controls.addEventListener( 'change', render );
+				controls.rotateSpeed = 0.5; 
+				controls.enableZoom = true;  
+				controls.zoomSpeed = 0.5;  
+
+				controls.minDistance = 500;
+				controls.maxDistance = 2500;
+				
+				controls.enableDamping = true;
+
+				// scene itself
+				scene = new THREE.Scene();
+				scene.background = new THREE.Color( 0xD3D3D3 );
+
+				scene.add( ambientLight );
+				scene.add( light );
+			
+
+				// Объекты меняем тут
+				var geometry = new TeapotGeometry( 60 );
+					var material = new THREE.MeshPhongMaterial( { color: 0x24F816 } );	
+					var teapot = new THREE.Mesh( geometry, material );
+					teapot.position.set( 600, 60, 100 ); 	
+					scene.add( teapot );
+
+					var radiusTop = 80; var radiusBottom = 80;
+					var heigth = 140; var segments = 100;
+					var geometry = new THREE.CylinderGeometry( 
+						radiusTop, radiusBottom, heigth, segments );
+					var material = new THREE.MeshPhongMaterial( { color: 0x00FF00 } );
+					var piramida = new THREE.Mesh( geometry, material );
+					piramida.position.set( -300, 70, 100 ); 					
+					scene.add( piramida );
+					
+				var geometry = new THREE.BoxGeometry( 170, 150, 170 );
+					var material = new THREE.MeshPhongMaterial( { color: 0xFDBDBA } );
+					var Cube = new THREE.Mesh( geometry, material );
+					Cube.position.set( -300, 70, -300 );
+					Cube.rotation.y = Math.PI / 2;
+					scene.add( Cube );
+
+
+					var radiusTop = 1; var radiusBottom = 120;
+					var heigth = 240; var segments = 4;
+					var geometry = new THREE.CylinderGeometry( 
+						radiusTop, radiusBottom, heigth, segments );
+					var material = new THREE.MeshPhongMaterial( { color: 0x98DD78 } );
+					var piramida = new THREE.Mesh( geometry, material );
+					piramida.position.set( 600, 120, -300 ); 					
+					piramida.rotation.y = Math.PI / 4;
+					scene.add( piramida );
+
+					var geometry = new THREE.BoxGeometry( 170, 150, 170 );
+					var material = new THREE.MeshPhongMaterial( { color: 0xFDBDBA } );
+					var Cube = new THREE.Mesh( geometry, material );
+					Cube.position.set( -300, 70, -300 );
+					Cube.rotation.y = Math.PI / 2;
+					scene.add( Cube );
+					
+					var geometry = new THREE.SphereGeometry(80, 30, 30); 
+					var material = new THREE.MeshPhongMaterial( { color: 0x0000FF } );
+					var Sphere1 = new THREE.Mesh( geometry, material );
+					Sphere1.position.set( 300, 10, -300 );
+					scene.add( Sphere1 );
+					
+					var radiusTop = 1; var radiusBottom = 100;
+					var heigth = 160; var segments = 100;
+					var geometry = new THREE.CylinderGeometry( 
+						radiusTop, radiusBottom, heigth, segments );	
+					var material = new THREE.MeshPhongMaterial( { color: 0xBD33A4 } );
+					var piramida = new THREE.Mesh( geometry, material );
+					piramida.position.set( -10, 80, -300 ); 					
+					scene.add( piramida );
+
+
+			
+
+
+					const helper = new THREE.GridHelper( 1000, 10 );
+					//helper.rotation.x = Math.PI / 2;
+					scene.add( helper );
+
+			}
+
+			// EVENT HANDLERS
+
+
+			function onWindowResize() {
+
+				camera.aspect = window.innerWidth / window.innerHeight;
+				camera.updateProjectionMatrix();
+
+				renderer.setSize( window.innerWidth, window.innerHeight );
+
+			}
+
+			//
+
+			function animate() {
+
+				requestAnimationFrame( animate );
+				controls.update(); //
+				render();
+
+			}
+
+			function render() {
+
+				renderer.render( scene, camera );
+
+			}			
+
+
+		</script>
+
+	
+</body></html>
